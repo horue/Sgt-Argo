@@ -1,4 +1,5 @@
 const { Replyer } = require('./wppFunctions/replyer.js');
+const { Analyzer } = require('./wppFunctions/analyzer.js');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
 
@@ -21,12 +22,12 @@ client.on('ready', () => {
     console.log('Client is ready!');
 });
 
-client.on('message_create', async (msg) => {
+client.on('message', async (msg) => {
     const actions = [
         {
             //processo intermediário para identificar palavras-chave e acionar a função ping do Replyer
-            keywords: ["fui roubado", "fui furtado", "fui assaltado"],
-            action: () => replyer.ping(),
+            keywords: ["fui roubado", "fui furtado", "fui assaltado", "roubo", "furto", "assalto", "roubado", "furtado", "assaltado", "roubada", "furtada", "assaltada"],
+            action: () => replyer.seguro(msg.body.toLowerCase()),
         }
     ];
 
@@ -43,5 +44,18 @@ client.on('message_create', async (msg) => {
 });
 
 const replyer = new Replyer(client);
+const analyzer = new Analyzer(client);
 
 client.initialize();
+
+
+
+
+
+
+//automação na geração de documento
+//autoatendimento com agente de ia (para conseguir juntar informações vindas do site)
+//agente que vasulhe a internet pesquisando sobre eventos de yoga e meditação (pela região sudeste) pela internet
+//entrar em contato com o profissional host do evento e oferecer venda plataforma da atmazen
+
+
