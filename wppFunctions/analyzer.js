@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import nodefs from "node:fs";
 dotenv.config();
 
-export class Analyzer {
+export default class Analyzer {
     constructor(client) {
         this.client = client;
         this.groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
