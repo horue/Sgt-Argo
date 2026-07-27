@@ -1,9 +1,9 @@
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
-import { Analyzer } from "./analyzer.js";
+import Analyzer from "./analyzer.js";
 dotenv.config();
 
-export class Replyer {
+export default class Replyer {
     constructor(client) {
         this.client = client;
         this.groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -28,14 +28,19 @@ export class Replyer {
 
 
     async seguro(msg) {
-        const filteredMessage = await this.analyzer.filterMessage(msg);
-        if (filteredMessage) {
-            const response = await this.buildMessageStart("Acabei de ser roubado..." + "Ofereça algum tipo de serviço relacionado a roubo, furto ou assalto, como um seguro.", "roubo");
-            return response + 'Você pode entrar em contato com nossa corretora de seguros para obter assistência imediata. Estamos aqui para ajudá-lo a lidar com essa situação e garantir que você receba o suporte necessário: ';
-        } 
-        else{
-            return
+        try {
+            const filteredMessage = await this.analyzer.filterMessage(msg);
+            if (filteredMessage) {
+                const response = await this.buildMessageStart("Acabei de ser roubado..." + "Ofereça algum tipo de serviço relacionado a roubo, furto ou assalto, como um seguro.", "roubo");
+                return response + 'Você pode entrar em contato com nossa corretora de seguros para obter assistência imediata. Estamos aqui para ajudá-lo a lidar com essa situação e garantir que você receba o suporte necessário: ';
+            } 
+            else{
+                return
+            }
+        }
+        catch (error) {
+            console.error("Erro ao processar a mensagem no Replyer:", error);
+            await this.seguro(msg); // Tenta novamente em caso de erro
         }
     }
-
 }
