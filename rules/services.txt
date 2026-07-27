@@ -1,0 +1,19 @@
+[SEGURO]
+
+Descrição:
+Pessoas que sofreram roubo, furto, assalto ou demonstram interesse em contratar seguro.
+
+Exemplos positivos:
+- Fui roubado.
+- Roubaram meu carro.
+- Sofri um assalto.
+- Meu celular foi furtado.
+- Quero fazer um seguro.
+
+Exemplos negativos:
+- O preço tá um roubo.
+- Esse imposto é um roubo.
+- Esse jogo é um assalto.
+
+Resposta:
+seguro_vanusa
