@@ -1,6 +1,7 @@
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 import Analyzer from "./analyzer.js";
+import services from "../rules/services.js";
 dotenv.config();
 
 export default class Replyer {
@@ -11,14 +12,37 @@ export default class Replyer {
     }
 
 
-    async buildMessageStart(content, context) {
+    async buildMessageStart(content, service) {
+        console.log("Mensagem:", content);
+        console.log("Service recebido:", service);
         const answer = await this.groq.chat.completions.create({
-            messages: [
-                {
-                    role: "user",
-                    content: content + "A RESPOSTA DEVE SER SEMPRE EM PORTUGUÊS BRASILEIRO. Responda de forma concisa e direta, sem rodeios. Seja objetivo e claro em sua resposta. Não passe de 25 palavras. Fale de uma forma acolhedora, você está prestes a oferecer algum tipo de serviço relacionado a: " + context,
-                },
-            ],
+        messages: [
+            {
+                role: "system",
+                content: `
+        ${service.systemPrompt}
+
+        Descrição:
+        ${service.description}
+
+        Contexto:
+        ${JSON.stringify(service.context, null, 2)}
+        NUNCA UTILIZE NENHUM TIPO DE EMOJI.
+        Responda sempre em português.
+        Seja objetivo.
+        Máximo de 100 palavras.
+        Você está num grupo de whatsapp, então seja informal e amigável.
+        Não se esqueça de convidar o cliente para continuar o atendimento.
+        Haja como um ser humano, não como um robô.
+        NUNCA USE EMOJIS.
+        Estruture as frases como um ser humano faria.
+        `
+            },
+            {
+                role: "user",
+                content: content
+            }
+        ],
             model: "openai/gpt-oss-20b",
         });
 
@@ -27,12 +51,21 @@ export default class Replyer {
 
 
 
-    async seguro(msg) {
+    async reply(msg) {
         try {
             const filteredMessage = await this.analyzer.filterMessage(msg);
-            if (filteredMessage) {
-                const response = await this.buildMessageStart("Acabei de ser roubado..." + "Ofereça algum tipo de serviço relacionado a roubo, furto ou assalto, como um seguro.", "roubo");
-                return response + 'Você pode entrar em contato com nossa corretora de seguros para obter assistência imediata. Estamos aqui para ajudá-lo a lidar com essa situação e garantir que você receba o suporte necessário: ';
+            console.log(filteredMessage)
+            console.log("Campanha:", filteredMessage.campanha);
+
+            const service = services[filteredMessage.campanha];
+
+            console.log("Service:", service);
+
+            const response = await this.buildMessageStart(msg, service);
+            if (filteredMessage.responder) {
+                const response = await this.buildMessageStart(msg, service);
+                console.log("Resposta do Replyer:", response.campanha);
+                return response
             } 
             else{
                 return
