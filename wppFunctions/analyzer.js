@@ -58,7 +58,7 @@ export default class Analyzer {
         try {
             const jsonResponse = JSON.parse(answerText);
             console.log("Resposta do Analyzer:", jsonResponse);
-            return jsonResponse.responder;
+            return jsonResponse;
         }
         catch (error) {
             console.error("Erro ao analisar a resposta do Analyzer:", error);
