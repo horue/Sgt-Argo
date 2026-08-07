@@ -2,6 +2,7 @@ import Replyer from '../wppFunctions/replyer.js';
 import Analyzer from '../wppFunctions/analyzer.js';
 import pkg from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
+import keywords from '../presets/keywords.js';
 const { Client, LocalAuth } = pkg;
 
 
@@ -33,8 +34,8 @@ export default class Bot {
             const actions = [
                 {
                     //processo intermediário para identificar palavras-chave e acionar a função ping do Replyer
-                    keywords: ["fui roubado", "fui furtado", "fui assaltado", "roubo", "furto", "assalto", "roubado", "furtado", "assaltado", "roubada", "furtada", "assaltada"],
-                    action: () => this.replyer.seguro(msg.body.toLowerCase()),
+                    keywords: keywords,
+                    action: () => this.replyer.reply(msg.body.toLowerCase()),
                 }
             ];
 
